@@ -4,15 +4,15 @@ const { hours, species } = data;
 const animalsList = species.map((specie) => specie.name);
 const daysList = Object.keys(hours);
 
-function generateDaySchedule(day) {
-  if (day === 'Monday') {
+function getDaySchedule(weekDay) {
+  if (weekDay === 'Monday') {
     const officeHour = 'CLOSED';
     const exhibition = 'The zoo will be closed!';
     return { officeHour, exhibition };
   }
-  const officeHour = `Open from ${hours[day].open}am until ${hours[day].close}pm`;
+  const officeHour = `Open from ${hours[weekDay].open}am until ${hours[weekDay].close}pm`;
   const exhibition = species
-    .filter((specie) => specie.availability.includes(day))
+    .filter((specie) => specie.availability.includes(weekDay))
     .map((specie) => specie.name);
   return { officeHour, exhibition };
 }
@@ -23,12 +23,10 @@ function getSchedule(scheduleTarget) {
     return species.find((specie) => specie.name === scheduleTarget).availability;
   }
   if (daysList.includes(scheduleTarget)) {
-    schedule[scheduleTarget] = generateDaySchedule(scheduleTarget);
+    schedule[scheduleTarget] = getDaySchedule(scheduleTarget);
     return schedule;
   }
-  daysList.forEach((day) => {
-    schedule[day] = generateDaySchedule(day);
-  });
+  daysList.forEach((day) => { schedule[day] = getDaySchedule(day); });
   return schedule;
 }
 

@@ -4,8 +4,10 @@ const { employees } = data;
 
 function getEmployeeByName(employeeName) {
   if (!employeeName) return {};
-  return employees.find((employee) => employee.firstName === employeeName
+  const employeeFound = employees.find((employee) => employee.firstName === employeeName
   || employee.lastName === employeeName);
+  if (!employeeFound) return 'Pessoa colaboradora não encontrada na base de dados';
+  return employeeFound;
 }
 
 module.exports = getEmployeeByName;

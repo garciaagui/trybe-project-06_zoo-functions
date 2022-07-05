@@ -3,46 +3,51 @@ const data = require('../data/zoo_data');
 const { species } = data;
 const locations = ['NE', 'NW', 'SE', 'SW'];
 
-function getOnlySpeciesNames() {
-  const obj = {};
+function getOnlyAnimalsNames() {
+  const animals = {};
   locations.forEach((location) => {
-    const animals = species.filter((specie) => specie.location === location)
+    const animalsByLocation = species.filter((specie) => specie.location === location)
       .map((specie) => specie.name);
-    obj[location] = animals;
+    animals[location] = animalsByLocation;
   });
-  return obj;
+  return animals;
 }
 
-function getAllSpeciesInfo(sortInfo, sexInfo) {
-  const array = [];
+function applyModifiers(animalInfo, sortInfo, sexInfo) {
+  let animal = animalInfo;
+  if (sexInfo) { animal = animal.filter((resident) => resident.sex === sexInfo); }
+  animal = animal.map((resident) => resident.name);
+  if (sortInfo) { animal = animal.sort(); }
+  return animal;
+}
+
+function getAllAnimalsInfo(sortInfo, sexInfo) {
+  const allAnimals = [];
   locations.forEach((location) => {
-    const animals = species.filter((specie) => specie.location === location)
+    const animalsByLocation = species.filter((specie) => specie.location === location)
       .map((specie) => {
-        const obj = {};
-        let info = specie.residents.map((resident) => resident);
-        if (sexInfo) info = info.filter((resident) => resident.sex === sexInfo);
-        info = info.map((resident) => resident.name);
-        if (sortInfo) info.sort();
-        obj[specie.name] = info;
-        return obj;
+        const animalObject = {};
+        const animalInfo = specie.residents.map((resident) => resident);
+        animalObject[specie.name] = applyModifiers(animalInfo, sortInfo, sexInfo);
+        return animalObject;
       });
-    array.push(animals);
+    allAnimals.push(animalsByLocation);
   });
-  return array;
+  return allAnimals;
 }
 
 function getAnimalMap(options) {
-  if (options === undefined) return getOnlySpeciesNames();
+  if (options === undefined) return getOnlyAnimalsNames();
   const { includeNames, sex, sorted } = options;
   if (includeNames) {
-    const animals = getAllSpeciesInfo(sorted, sex);
-    const obj = {};
+    const animalsInfo = getAllAnimalsInfo(sorted, sex);
+    const mainObject = {};
     locations.forEach((location, index) => {
-      obj[location] = animals[index];
+      mainObject[location] = animalsInfo[index];
     });
-    return obj;
+    return mainObject;
   }
-  return getOnlySpeciesNames();
+  return getOnlyAnimalsNames();
 }
 
 module.exports = getAnimalMap;

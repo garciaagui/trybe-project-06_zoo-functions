@@ -4,13 +4,9 @@ const { species, employees } = data;
 
 function getAnimalsInfo(employee) {
   const animalsId = employee.responsibleFor;
-  const animalsName = animalsId.map((id) => (species
-    .find((specie) => specie.id === id)).name);
-  const animalsLocation = animalsId.map((id) => (species
-    .find((specie) => specie.id === id)).location);
   return {
-    names: animalsName,
-    locations: animalsLocation,
+    names: animalsId.map((id) => (species.find((specie) => specie.id === id)).name),
+    locations: animalsId.map((id) => (species.find((specie) => specie.id === id)).location),
   };
 }
 
@@ -27,14 +23,10 @@ function getFullCoverage() {
 }
 
 function getEmployeesCoverage(employeeInfo) {
-  if (!employeeInfo) {
-    return getFullCoverage();
-  }
+  if (!employeeInfo) return getFullCoverage();
   const info = Object.values(employeeInfo)[0];
   const colaborator = employees.find((employee) => Object.values(employee).includes(info));
-  if (!colaborator) {
-    throw new Error('Informações inválidas');
-  }
+  if (!colaborator) throw new Error('Informações inválidas');
   const animals = getAnimalsInfo(colaborator);
   return {
     id: colaborator.id,

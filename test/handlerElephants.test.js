@@ -1,5 +1,5 @@
 const handlerElephants = require('../src/handlerElephants');
-//
+
 describe('Testes da função HandlerElephants', () => {
   it('Testa se é uma função', () => {
     expect(typeof handlerElephants).toBe('function');
@@ -16,7 +16,7 @@ describe('Testes da função HandlerElephants', () => {
     expect(handlerElephants({ param: 'names' })).toBe(expected);
     expect(handlerElephants(['names'])).toBe(expected);
   });
-  it('Testa se retorna null quando o parâmetro passado é uma string mas não tem aplicabilidade na função', () => {
+  it('Testa se retorna null quando o parâmetro passado é uma string, mas não tem aplicabilidade na função', () => {
     const expected = null;
     expect(handlerElephants('colors')).toBe(expected);
     expect(handlerElephants('weights')).toBe(expected);

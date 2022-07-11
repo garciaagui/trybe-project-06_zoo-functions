@@ -20,7 +20,6 @@ describe('Testes da função getOpeningHours', () => {
     expect(getOpeningHours()).toEqual(expected);
   });
   it('Testa se retorna "The zoo is open" quando o dia e horário forem adequados', () => {
-    // Random hours?
     const expected = 'The zoo is open';
     expect(getOpeningHours('Tuesday', '08:00-AM')).toBe(expected);
     expect(getOpeningHours('Wednesday', '02:30-PM')).toBe(expected);
@@ -45,30 +44,37 @@ describe('Testes da função getOpeningHours', () => {
     expect(getOpeningHours('Monday', '06:00-PM')).toBe(expected);
     expect(getOpeningHours('Monday', '12:00-AM')).toBe(expected);
   });
-  it('Testa se um erro é lançado quando o dia passado no 1o parâmetro não for válido', () => {
+  it('Testa se um erro é lançado quando o dia passado no 1º parâmetro não for válido', () => {
+    const expected = 'The day must be valid. Example: Monday';
     expect(() => getOpeningHours('Thorsday', '12:00-PM')).toThrow();
+    expect(() => getOpeningHours('Munday', '04:00-PM')).toThrowError(new Error(expected));
   });
-  it('Testa se um erro é lançado quando as horas passadas no 2o parâmetro não são números', () => {
-    // const expected = 'The hour should represent a number';
-    // expect(() => getOpeningHours('Tuesday', 'XX:00-PM')).toThrowError(new Error(expected));
-    expect(() => getOpeningHours('Tuesday', 'XX:00-PM')).toThrow();
+  it('Testa se um erro é lançado quando as horas passadas no 2º parâmetro não são números', () => {
+    const expected = 'The hour should represent a number';
     expect(() => getOpeningHours('Tuesday', '1X:00-PM')).toThrow();
-    expect(() => getOpeningHours('Tuesday', 'X2:00-PM')).toThrow();
+    expect(() => getOpeningHours('Saturday', 'X2:00-PM')).toThrow();
+    expect(() => getOpeningHours('Sunday', 'XX:00-PM')).toThrowError(new Error(expected));
   });
-  it('Testa se um erro é lançado quando as horas passadas no 2o parâmetro não estão no intervalo de 0 e 12', () => {
+  it('Testa se um erro é lançado quando as horas passadas no 2º parâmetro não estão no intervalo de 0 e 12', () => {
+    const expected = 'The hour must be between 0 and 12';
     expect(() => getOpeningHours('Tuesday', '13:00-PM')).toThrow();
+    expect(() => getOpeningHours('Sunday', '20:00-AM')).toThrowError(new Error(expected));
   });
-  it('Testa se um erro é lançado quando os minutos passados no 2o parâmetro não são números', () => {
-    expect(() => getOpeningHours('Tuesday', '12:XX-PM')).toThrow();
+  it('Testa se um erro é lançado quando os minutos passados no 2º parâmetro não são números', () => {
+    const expected = 'The minutes should represent a number';
     expect(() => getOpeningHours('Tuesday', '12:0X-PM')).toThrow();
-    expect(() => getOpeningHours('Tuesday', '12:X0-PM')).toThrow();
+    expect(() => getOpeningHours('Monday', '12:X0-PM')).toThrow();
+    expect(() => getOpeningHours('Wednesday', '12:XX-PM')).toThrowError(new Error(expected));
   });
-  it('Testa se um erro é lançado quando os minutos passados no 2o parâmetro não estão no intervalo de 0 e 59', () => {
+  it('Testa se um erro é lançado quando os minutos passados no 2º parâmetro não estão no intervalo de 0 e 59', () => {
+    const expected = 'The minutes must be between 0 and 59';
     expect(() => getOpeningHours('Tuesday', '12:60-PM')).toThrow();
+    expect(() => getOpeningHours('Thursday', '09:90-AM')).toThrowError(new Error(expected));
   });
-  it('Testa se um erro é lançado quando a abreviação passada no 2o parâmetro não é "AM" ou "PM"', () => {
-    expect(() => getOpeningHours('Tuesday', '12:00-XX')).toThrow();
-    expect(() => getOpeningHours('Tuesday', '12:00-AX')).toThrow();
-    expect(() => getOpeningHours('Tuesday', '12:00-XM')).toThrow();
+  it('Testa se um erro é lançado quando a abreviação passada no 2º parâmetro não é "AM" ou "PM"', () => {
+    const expected = 'The abbreviation must be \'AM\' or \'PM\'';
+    expect(() => getOpeningHours('Friday', '02:00-AX')).toThrow();
+    expect(() => getOpeningHours('Tuesday', '10:00-XM')).toThrow();
+    expect(() => getOpeningHours('Saturday', '12:00-XX')).toThrowError(new Error(expected));
   });
 });

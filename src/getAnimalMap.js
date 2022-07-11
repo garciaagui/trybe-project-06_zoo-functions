@@ -4,36 +4,34 @@ const { species } = data;
 const locations = ['NE', 'NW', 'SE', 'SW'];
 
 function getOnlyAnimalsNames() {
-  const animals = {};
-  locations.forEach((location) => {
-    const animalsByLocation = species.filter((specie) => specie.location === location)
-      .map((specie) => specie.name);
-    animals[location] = animalsByLocation;
-  });
-  return animals;
+  return locations.reduce((animalsObj, currentLocation) => {
+    const auxiliarObj = animalsObj;
+    const animalsByLocation = species.filter(({ location }) => location === currentLocation)
+      .map(({ name }) => name);
+    auxiliarObj[currentLocation] = animalsByLocation;
+    return animalsObj;
+  }, {});
 }
 
 function applyModifiers(animalInfo, sortInfo, sexInfo) {
   let animal = animalInfo;
-  if (sexInfo) { animal = animal.filter((resident) => resident.sex === sexInfo); }
-  animal = animal.map((resident) => resident.name);
-  if (sortInfo) { animal = animal.sort(); }
-  return animal;
+  if (sexInfo) { animal = animal.filter(({ sex }) => sex === sexInfo); }
+  if (sortInfo) { animal = animal.sort((a, b) => (a.name > b.name ? 1 : -1)); }
+  return animal.map(({ name }) => name);
 }
 
 function getAllAnimalsInfo(sortInfo, sexInfo) {
-  const allAnimals = [];
-  locations.forEach((location) => {
-    const animalsByLocation = species.filter((specie) => specie.location === location)
+  return locations.reduce((animalsArr, currentLocation) => {
+    const animalsByLocation = species.filter(({ location }) => location === currentLocation)
       .map((specie) => {
         const animalObject = {};
         const animalInfo = specie.residents.map((resident) => resident);
         animalObject[specie.name] = applyModifiers(animalInfo, sortInfo, sexInfo);
         return animalObject;
       });
-    allAnimals.push(animalsByLocation);
-  });
-  return allAnimals;
+    animalsArr.push(animalsByLocation);
+    return animalsArr;
+  }, []);
 }
 
 function getAnimalMap(options) {
